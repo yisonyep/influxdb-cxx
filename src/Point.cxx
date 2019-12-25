@@ -9,43 +9,77 @@
 #include <memory>
 #include <sstream>
 
+using namespace std;
 namespace influxdb
 {
 
-template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
+	template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
+	//template<class... Ts> overloaded(Ts...)->overloaded<Ts...>;
 
 Point::Point(const std::string& measurement) :
   mMeasurement(measurement), mTimestamp(Point::getCurrentTimestamp())
 {
-  mValue = {};
+  //mValue = {};
   mTags = {};
   mFields = {};
 }
 
-Point&& Point::addField(std::string_view name, std::variant<int, std::string, double> value)
-{
-  std::stringstream convert;
-  if (!mFields.empty()) convert << ",";
+	Point&& Point::addField(std::string name, int  value)
+	{
+		std::stringstream convert;
+		if (!mFields.empty()) convert << ",";
 
-  convert << name << "=";
-  std::visit(overloaded {
-    [&convert](int value) { convert << value << 'i'; },
-    [&convert](double value) { convert << value; },
-    [&convert](const std::string& value) { convert << '"' << value << '"'; },
-    }, value);
-  mFields += convert.str();
-  return std::move(*this);
-}
+		convert << name << "=";
+		convert << value << 'i';
+		mFields += convert.str();
+		return std::move(*this);
 
-Point&& Point::addTag(std::string_view key, std::string_view value)
-{
-  mTags += ",";
-  mTags += key;
-  mTags += "=";
-  mTags += value;
-  return std::move(*this);
-}
+	}
+	Point&& Point::addField(std::string name, string  value)
+	{
+		std::stringstream convert;
+		if (!mFields.empty()) convert << ",";
+
+		convert << name << "=";
+		convert << '"' << value << '"';
+		mFields += convert.str();
+		return std::move(*this);
+	}
+
+	Point&& Point::addField(std::string name, double value)
+	{
+		std::stringstream convert;
+		if (!mFields.empty()) convert << ",";
+
+		convert << name << "=";
+		convert << value;
+		mFields += convert.str();
+		return std::move(*this);
+	}
+
+	//Point&& Point::addField(std::string name, std::variant<int, std::string, double> value)
+	//{
+	//	std::stringstream convert;
+	//	if (!mFields.empty()) convert << ",";
+
+	//	convert << name << "=";
+	//	std::visit(overloaded{
+	//	  [&convert](int value) { convert << value << 'i'; },
+	//	  [&convert](double value) { convert << value; },
+	//	  [&convert](const std::string& value) { convert << '"' << value << '"'; },
+	//		}, value);
+	//	mFields += convert.str();
+	//	return std::move(*this);
+	//}
+
+	Point&& Point::addTag(std::string key, std::string value)
+	{
+		mTags += ",";
+		mTags += key;
+		mTags += "=";
+		mTags += value;
+		return std::move(*this);
+	}
 
 Point&& Point::setTimestamp(std::chrono::time_point<std::chrono::system_clock> timestamp)
 {

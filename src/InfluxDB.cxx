@@ -41,7 +41,7 @@ void InfluxDB::flushBuffer() {
   transmit(std::move(stringBuffer));
 }
 
-void InfluxDB::addGlobalTag(std::string_view key, std::string_view value)
+void InfluxDB::addGlobalTag(std::string key, std::string value)
 {
   if (!mGlobalTags.empty()) mGlobalTags += ",";
   mGlobalTags += key;
@@ -99,7 +99,7 @@ std::vector<Point> InfluxDB::query(const std::string&  query)
             std::tm tm = {};
             std::stringstream ss;
             ss << value;
-            ss >> std::get_time(&tm, "%FT%TZ");
+            		ss >> std::get_time(&tm, "%FT%TZ");
             point.setTimestamp(std::chrono::system_clock::from_time_t(std::mktime(&tm)));
             continue;
           }

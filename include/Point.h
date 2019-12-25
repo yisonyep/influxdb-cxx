@@ -7,8 +7,9 @@
 
 #include <string>
 #include <chrono>
-#include <variant>
+//#include <variant>
 
+using namespace std;
 namespace influxdb
 {
 
@@ -22,14 +23,20 @@ class Point
     /// Default destructor
     ~Point() = default;
 
-    /// Adds a tags
-    Point&& addTag(std::string_view key, std::string_view value);
+		/// Adds a tags
+		Point&& addTag(std::string key, std::string value);
 
-    /// Adds filed
-    Point&& addField(std::string_view name, std::variant<int, std::string, double> value);
+		/// Adds filed
+		//Point&& addField(std::string_view name, std::variant<int, std::string, double> value);
 
-    /// Generetes current timestamp
-    static auto getCurrentTimestamp() -> decltype(std::chrono::system_clock::now());
+		Point&& addField(std::string name, int  value);
+		
+		Point&& addField(std::string name, string  value);
+		
+		Point&& addField(std::string name, double value);
+		
+		/// Generetes current timestamp
+		static auto getCurrentTimestamp() -> decltype(std::chrono::system_clock::now());
 
     /// Converts point to Influx Line Protocol
     std::string toLineProtocol() const;
@@ -46,9 +53,9 @@ class Point
     /// Fields getter
     std::string getFields() const;
 
-  protected:
-    /// A value
-    std::variant<int, std::string, double> mValue;
+	protected:
+		/// A value
+		//std::variant<int, std::string, double> mValue;
 
     /// A name
     std::string mMeasurement;

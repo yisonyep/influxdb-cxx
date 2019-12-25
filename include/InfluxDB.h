@@ -49,7 +49,7 @@ class InfluxDB
     /// Adds a global tag
     /// \param name
     /// \param value
-    void addGlobalTag(std::string_view name, std::string_view value);
+    void addGlobalTag(std::string name, std::string value);
 
   private:
     /// Buffer for points

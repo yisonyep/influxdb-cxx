@@ -92,7 +92,7 @@ target_link_libraries(InfluxDB
 )
 
 # Use C++17
-target_compile_features(InfluxDB PUBLIC cxx_std_17)
+#target_compile_features(InfluxDB PUBLIC cxx_std_11)
 
 # Set compile definition if Boost found
 target_compile_definitions(InfluxDB
